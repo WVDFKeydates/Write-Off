@@ -450,6 +450,27 @@
   /* ── DIVIDER ── */
   .divider { height: 1px; background: var(--border-light); margin: 0 0 1.5rem; }
 
+
+  /* ── COLLAPSIBLE SECTIONS ── */
+  .section-header.collapsible { cursor: pointer; user-select: none; }
+  .section-header.collapsible:hover { opacity: 0.85; }
+  .collapse-icon {
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--orange);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+    font-style: normal;
+  }
+  .section-header.collapsible.collapsed .collapse-icon { transform: rotate(-90deg); }
+  .collapsible-body {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+    max-height: 2000px;
+    opacity: 1;
+  }
+  .collapsible-body.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+  .no-transition { transition: none !important; }
   /* ── PRINT ── */
   @media print {
     body { background: white; font-size: 12px; }
@@ -528,6 +549,8 @@
   <!-- TOOLBAR -->
   <div class="toolbar">
     <span class="toolbar-label">Actions:</span>
+    <button class="btn btn-ghost" onclick="expandAll()">⊞ Expand all</button>
+    <button class="btn btn-ghost" onclick="collapseAll()">⊟ Collapse all</button>
     <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
     <button class="btn btn-ghost" onclick="saveForm()">💾 Save to browser</button>
     <button class="btn btn-ghost" onclick="loadForm()">📂 Load saved</button>
@@ -540,14 +563,16 @@
 
     <!-- SECTION 1: REQUEST DETAILS -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-1">
         <div class="section-number">1</div>
         <div class="section-title">Request Details</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-1">
       <div class="field-grid field-grid-2" style="margin-bottom:1rem;">
         <div class="field">
           <label class="field-label" for="office">Office / Entity</label>
-          <input type="text" id="office" name="office" placeholder="e.g. World Vision Development Foundation Inc.">
+          <input type="text" id="office" name="office" value="World Vision Development Foundation Inc." readonly style="background:var(--field50);color:var(--midnight);cursor:default;font-weight:500;">
         </div>
         <div class="field">
           <label class="field-label" for="docNumber">Document Number</label>
@@ -589,14 +614,17 @@
           <input type="text" id="totalUSD" name="totalUSD" placeholder="US$ ___________">
         </div>
       </div>
+      </div><!-- /collapsible-body-1 -->
     </div>
 
     <!-- SECTION 2: ASSET CLASSIFICATION -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-2">
         <div class="section-number">2</div>
         <div class="section-title">Asset Type &amp; Classification</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-2">
       <div class="note"><strong>Note:</strong> Errors, duplicate entries, accrued expenses, prepayments, and revaluations <strong>cannot</strong> be written off — these must be resolved through adjustments.</div>
       <div class="check-grid">
         <label class="check-item"><input type="checkbox" name="assetType" value="uncollectible"><label>Uncollectible Accounts / Outstanding Debts</label></label>
@@ -612,27 +640,33 @@
           <label>Other: <input type="text" name="assetTypeOther" placeholder="Specify…" style="border:none; border-bottom:1px solid var(--border); border-radius:0; padding:2px 4px; width:200px; font-size:12.5px; outline:none;"></label>
         </label>
       </div>
+      </div><!-- /collapsible-body-2 -->
     </div>
 
     <!-- SECTION 3: BACKGROUND -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-3">
         <div class="section-number">3</div>
         <div class="section-title">Background &amp; Description</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-3">
       <div class="field">
         <label class="field-label" for="background">Brief Description of the Write-Off</label>
         <div class="field-hint">Summarise the outstanding item(s), how they arose, and how long they have been outstanding.</div>
         <textarea id="background" name="background" rows="5" placeholder="Provide a brief summary…"></textarea>
       </div>
+      </div><!-- /collapsible-body-3 -->
     </div>
 
     <!-- SECTION 4: ITEMS FOR WRITE-OFF -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-4">
         <div class="section-number">4</div>
         <div class="section-title">Details of Items for Write-Off</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-4">
       <div class="note">List each item separately. Attach the aging report and GL detail report as supporting documents.</div>
       <div class="items-table-wrap">
         <table id="itemsTable">
@@ -660,14 +694,17 @@
         </table>
       </div>
       <button type="button" class="add-row-btn" onclick="addItemRow()">+ Add row</button>
+      </div><!-- /collapsible-body-4 -->
     </div>
 
     <!-- SECTION 5: DUE DILIGENCE -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-5">
         <div class="section-number">5</div>
         <div class="section-title">Due Diligence Checklist</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-5">
       <div class="note">All applicable items must be completed and evidenced before submission. Tick each box and attach supporting documentation.</div>
 
       <div class="sub-section-title">A. All Asset Types</div>
@@ -707,14 +744,17 @@
         <label class="checklist-item"><input type="checkbox" name="dd_e1"><label>Sufficient evidence of reasonable follow-up with the partner or staff member is documented</label></label>
         <label class="checklist-item"><input type="checkbox" name="dd_e2"><label>Legal counsel engagement has been considered and the outcome documented</label></label>
       </div>
+      </div><!-- /collapsible-body-5 -->
     </div>
 
     <!-- SECTION 6: JUSTIFICATION -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-6">
         <div class="section-number">6</div>
         <div class="section-title">Justification &amp; Supporting Documentation</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-6">
       <div class="field" style="margin-bottom:1rem;">
         <label class="field-label" for="justification">Justification for Write-Off</label>
         <div class="field-hint">Reference the specific criteria from Policy FIN-060105-01-P Section 2.3 that apply (e.g. inability to locate debtor, cost of recovery exceeds recovery amount, insupportable GL balance, auditor recommendation).</div>
@@ -725,14 +765,17 @@
         <div class="field-hint">e.g. Aging report, GL detail, Reconciliation report, Correspondence with debtor/partner, Inventory stocktake, Fixed asset count, Audit recommendation, Legal counsel advice…</div>
         <textarea id="documents" name="documents" rows="4" placeholder="List all attached supporting documents…"></textarea>
       </div>
+      </div><!-- /collapsible-body-6 -->
     </div>
 
     <!-- SECTION 7: FINANCIAL IMPACT -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-7">
         <div class="section-number">7</div>
         <div class="section-title">Financial Impact &amp; Accounting Entries</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-7">
       <div class="note">Journal entries must follow the Direct Write-Off Method per Procedures FIN-060105-02-PR. Indicate whether this has been accounted for in the budget or financial reports.</div>
       <div class="items-table-wrap" style="margin-bottom:1rem;">
         <table id="entriesTable">
@@ -765,14 +808,17 @@
           <textarea id="fundDetail" name="fundDetail" rows="3" placeholder="Provide detail on the identified or proposed funding source to cover the write-off amount…"></textarea>
         </div>
       </div>
+      </div><!-- /collapsible-body-7 -->
     </div>
 
     <!-- SECTION 8: CORRECTIVE ACTIONS -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-8">
         <div class="section-number">8</div>
         <div class="section-title">Corrective &amp; Preventive Actions</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-8">
       <div class="note">As required by Policy 2.1.2, the request must include improvement measures to strengthen internal controls and prevent recurrence.</div>
       <div class="items-table-wrap">
         <table id="actionsTable">
@@ -789,14 +835,17 @@
         </table>
       </div>
       <button type="button" class="add-row-btn" onclick="addActionRow()">+ Add row</button>
+      </div><!-- /collapsible-body-8 -->
     </div>
 
     <!-- SECTION 9: APPROVAL MATRIX -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-9">
         <div class="section-number">9</div>
         <div class="section-title">Approval Matrix Quick Reference — FIN-060105-01-P Section 2.2</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-9">
       <div class="note">For amounts above US$5,000, the Regional Audit Director may be requested by management to review the completeness of the proposed write-off.</div>
       <div class="items-table-wrap">
         <table class="matrix-table">
@@ -852,14 +901,17 @@
           </tbody>
         </table>
       </div>
+      </div><!-- /collapsible-body-9 -->
     </div>
 
     <!-- SECTION 10: RECOMMENDATION -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-10">
         <div class="section-number">10</div>
         <div class="section-title">Recommendation</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-10">
       <div class="recommendation-box" id="recommendationText">
         I respectfully recommend the approval of the proposed write-off amounting to <strong>[Total Amount in Local Currency]</strong> (USD equivalent: <strong>US$[Amount]</strong>), as detailed above, in accordance with the WVI Write-Offs Policy (FIN-060105-01-P) and applicable accounting standards. All required due diligence has been performed and is evidenced in the attached documentation.
       </div>
@@ -867,14 +919,17 @@
         <label class="field-label" for="additionalRemarks">Additional Remarks (optional)</label>
         <textarea id="additionalRemarks" name="additionalRemarks" rows="3" placeholder="Any additional context or remarks for approvers…"></textarea>
       </div>
+      </div><!-- /collapsible-body-10 -->
     </div>
 
     <!-- SECTION 11: SIGNATURES -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-header collapsible" onclick="toggleSection(this)" id="hdr-11">
         <div class="section-number">11</div>
         <div class="section-title">Signatures &amp; Approval</div>
+        <i class="collapse-icon">▾</i>
       </div>
+      <div class="collapsible-body" id="body-11">
       <div class="items-table-wrap">
         <table class="sig-table">
           <thead>
@@ -921,6 +976,7 @@
       <div class="note" style="margin-top:1rem;">
         Once approved: record using the Direct Write-Off Method in SunSystems within the same period; report in the Cover Memo of the Field Financial Report; maintain all records per the Storage and Retention of Financial Records Policy.
       </div>
+      </div><!-- /collapsible-body-11 -->
     </div>
 
   </form>
@@ -1099,9 +1155,42 @@
     URL.revokeObjectURL(url);
   }
 
+
+  function expandAll() {
+    document.querySelectorAll('.collapsible-body').forEach(b => b.classList.remove('collapsed'));
+    document.querySelectorAll('.section-header.collapsible').forEach(h => h.classList.remove('collapsed'));
+  }
+  function collapseAll() {
+    document.querySelectorAll('.collapsible-body').forEach(b => b.classList.add('collapsed'));
+    document.querySelectorAll('.section-header.collapsible').forEach(h => h.classList.add('collapsed'));
+  }
+  function toggleSection(hdr) {
+    const id = hdr.id.replace('hdr-', '');
+    const body = document.getElementById('body-' + id);
+    const collapsed = body.classList.toggle('collapsed');
+    hdr.classList.toggle('collapsed', collapsed);
+  }
   // Auto-save every 60s
   setInterval(saveForm, 60000);
   updateProgress();
+  (function() {
+    // Collapse all immediately with no animation on load
+    document.querySelectorAll('.collapsible-body').forEach(function(b) {
+      b.classList.add('no-transition');
+      b.classList.add('collapsed');
+    });
+    document.querySelectorAll('.section-header.collapsible').forEach(function(h) {
+      h.classList.add('collapsed');
+    });
+    // Re-enable transitions after a frame so user interactions animate
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        document.querySelectorAll('.collapsible-body').forEach(function(b) {
+          b.classList.remove('no-transition');
+        });
+      });
+    });
+  })();
 </script>
 </body>
 </html>
